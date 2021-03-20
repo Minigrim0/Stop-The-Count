@@ -1,7 +1,10 @@
 import json
+import time
+import random
 
 from src.map import Map
 from src.player import Player
+from src.ennemy import Ennemy
 
 
 class Game(object):
@@ -12,6 +15,8 @@ class Game(object):
             self.player = Player()
         else:
             self.load(saveFile)
+
+        self.ennemyController = EnnemyController(0)
 
     def load(self, saveFile):
         """
@@ -26,9 +31,11 @@ class Game(object):
             pass
 
         self.player.update(screen)
+        self.ennemyController.update(screen)
 
     def draw(self, screen):
         self.map.draw(screen, (self.player.get_map_position(), 0))
+        self.ennemyController.draw(screen)
         self.player.draw(screen)
 
         screen.flip()
@@ -38,3 +45,27 @@ class Game(object):
         while self.isRunning:
             self.update(screen)
             self.draw(screen)
+
+
+class EnnemyController(object):
+    def __init__(self, difficulty):
+        self.ennemies = []
+        self.minTimeBetweenEnnemySpawn = 5  # seconds
+        self.timeAtLastEnnemySpawn = 0
+        self.timeAtLastEnnemySpawnAttempt = 0
+        self.ennemySpawnChance = 10  # Ten percent chance of spawning each second
+
+    def update(self, screen):
+        for ennemy in self.ennemies:
+            ennemy.update(screen)
+
+        if time.time() - self.timeAtLastEnnemySpawn > self.minTimeBetweenEnnemySpawn:
+            if time.time() - self.timeAtLastEnnemySpawnAttempt > 1:
+                self.timeAtLastEnnemySpawnAttempt = time.time()
+                if random.randint(0, 100) < self.ennemySpawnChance:
+                    self.ennemies.append(Ennemy())
+                    self.timeAtLastEnnemySpawn = time.time()
+
+    def draw(self, screen):
+        for ennemy in self.ennemies:
+            ennemy.draw(screen)
