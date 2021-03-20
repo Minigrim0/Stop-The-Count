@@ -8,17 +8,17 @@ pygame.init()
 
 screen = Screen((1920, 1080), "Stop the count!", fullScreen=False)
 
-game = Game()
+game = Game(screen)
 
-button_play = Button((300, 400), (300, 60), "Jouer", game.run, screen=screen)
-button_load = Button((300, 500), (300, 60), "Charger une partie", exit)
-button_howToPlay = Button((300, 600), (300, 60), "Comment Jouer ?", exit)
-button_quit = Button((300, 700), (300, 60), "Quitter", exit)
+button_play = Button((300, 400), (300, 60), "Play", game.run, screen=screen)
+button_load = Button((300, 500), (300, 60), "Load a Game", exit)
+button_howToPlay = Button((300, 600), (300, 60), "How To Build Walls", exit)
+button_quit = Button((300, 700), (300, 60), "Quit", exit)
 button_play.build(screen)
 button_load.build(screen)
 button_howToPlay.build(screen)
 button_quit.build(screen)
-mainMenu = Menu(pygame.image.load("assets/img/new_background.jpg"), [button_play, button_load, button_howToPlay, button_quit])
+mainMenu = Menu(pygame.image.load("assets/img/background.jpg"), [button_play, button_load, button_howToPlay, button_quit])
 
 
 def main():

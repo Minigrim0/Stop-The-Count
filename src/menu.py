@@ -2,14 +2,15 @@ import pygame
 
 
 class Menu(object):
-    def __init__(self, background, buttons=[]):
+    def __init__(self, background, buttons=[], quitOnEscape=False):
         self.buttons = buttons
         self.background = background
         self.running = True
         self.pointerImg = pygame.transform.scale(pygame.image.load("assets/img/cursor.png"), (60, 80))
         self.pointerImg_rect = self.pointerImg.get_rect()
+        self.quitOnEscape = quitOnEscape
         pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
-
+    
     def update(self, screen):
         for event in screen.events():
             if event.type == pygame.locals.MOUSEBUTTONUP:
@@ -18,6 +19,9 @@ class Menu(object):
             elif event.type == pygame.locals.MOUSEMOTION:
                 for button in self.buttons:
                     button.collide(event.pos)
+            elif event.type == pygame.locals.KEYDOWN:
+                if event.key == pygame.locals.K_ESCAPE and self.quitOnEscape:
+                    self.stop()
         self.pointerImg_rect.center = pygame.mouse.get_pos()
 
     def draw(self, screen):
@@ -28,8 +32,15 @@ class Menu(object):
         screen.blit(self.pointerImg, self.pointerImg_rect)
         screen.flip()
 
-    def run(self, screen):
+    def stop(self):
+        self.running = False
+    
+    def run(self, screen, game=None):
+        self.running = True
         while self.running:
+            if game:
+                game.draw(screen)
+                screen.blit(game.closeMenu, (10, 10))
             self.update(screen)
             self.draw(screen)
 
