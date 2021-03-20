@@ -5,11 +5,13 @@ from src.screen import Screen
 
 pygame.init()
 
-screen = Screen((1920, 1080), "Stop the count!", fullScreen=True)
+screen = Screen((1920, 1080), "Stop the count!", fullScreen=False)
 
-button_play = Button((100, 100), (250, 40), "Test lel", None)
+button_play = Button((835, 200), (250, 40), "Jouer", None)
+button_quit = Button((835, 300), (250, 40), "Quitter", exit)
 button_play.build(screen)
-mainMenu = Menu(pygame.image.load("assets/img/background.png"), [button_play])
+button_quit.build(screen)
+mainMenu = Menu(pygame.image.load("assets/img/background.png"), [button_play, button_quit])
 
 
 def main():
