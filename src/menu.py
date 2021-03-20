@@ -28,11 +28,12 @@ class Menu(object):
 
 
 class Button(object):
-    def __init__(self, pos, size, text, callback):
+    def __init__(self, pos, size, text, callback, **callbackargs):
         self.position = pos
         self.size = size
         self.text = text
         self.callback = callback
+        self.callback_args = callbackargs
 
     def build(self, screen):
         self.image = pygame.Surface((self.size))
@@ -49,4 +50,4 @@ class Button(object):
 
     def click(self, position):
         if self.collide(position):
-            self.callback()
+            self.callback(self.callbackargs)
