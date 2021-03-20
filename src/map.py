@@ -1,6 +1,12 @@
+import json
+
+import pygame
+
+
 class Map(object):
-    def __init__(self, images=None):
-        self.images = images
+    def __init__(self, mapFile):
+        map_info = json.loads(mapFile)
+        self.image = pygame.image.load(map_info["img"]).convert_alpha()
 
     def draw(self, screen, position):
-        pass
+        screen.blit(self.image, position)
