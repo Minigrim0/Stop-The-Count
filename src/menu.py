@@ -14,7 +14,8 @@ class Menu(object):
                     button.click(event.pos)
 
     def draw(self, screen):
-        screen.blit(self.background, (0, 0))
+        if self.background is not None:
+            screen.blit(self.background, (0, 0))
         for button in self.buttons:
             button.draw(screen)
 
