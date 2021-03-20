@@ -18,7 +18,7 @@ button_play.build(screen)
 button_load.build(screen)
 button_howToPlay.build(screen)
 button_quit.build(screen)
-mainMenu = Menu(pygame.image.load("assets/img/new_background.jpg"), [button_play, button_load, button_howToPlay, button_quit])
+mainMenu = Menu(pygame.image.load("assets/img/background.jpg"), [button_play, button_load, button_howToPlay, button_quit])
 
 
 def main():
