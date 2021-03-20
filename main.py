@@ -6,7 +6,7 @@ from src.game import Game
 
 pygame.init()
 
-screen = Screen((1920, 1080), "Stop the count!", fullScreen=False)
+screen = Screen((1920, 1080), "Stop the count!", fullScreen=True)
 
 game = Game()
 
