@@ -51,4 +51,4 @@ class Button(object):
 
     def click(self, position):
         if self.collide(position):
-            self.callback(self.callbackargs)
+            self.callback(**self.callback_args)
