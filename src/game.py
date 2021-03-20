@@ -16,7 +16,7 @@ class Game(object):
         else:
             self.load(saveFile)
 
-        self.ennemyController = EnnemyController(0)
+        self.ennemyController = EnnemyController(1)
 
     def load(self, saveFile):
         """
@@ -49,11 +49,16 @@ class Game(object):
 
 class EnnemyController(object):
     def __init__(self, difficulty):
+        """Initialize an ennemy controller
+
+        Args:
+            difficulty (Int): The difficulty of the game (between 1 and 5)
+        """
         self.ennemies = []
-        self.minTimeBetweenEnnemySpawn = 5  # seconds
+        self.minTimeBetweenEnnemySpawn = 5 - difficulty  # seconds
         self.timeAtLastEnnemySpawn = 0
         self.timeAtLastEnnemySpawnAttempt = 0
-        self.ennemySpawnChance = 10  # Ten percent chance of spawning each second
+        self.ennemySpawnChance = 10 * difficulty  # Ten percent chance of spawning each second
 
     def update(self, screen):
         for ennemy in self.ennemies:
