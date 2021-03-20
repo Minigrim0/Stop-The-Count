@@ -9,7 +9,7 @@ class Screen(object):
         info = pygame.display.Info()
 
         self.fonts = {}
-        for x in [12, 25, 50, 75, 100]:
+        for x in [12, 25, 50, 75, 100, 200, 300]:
             self.fonts[str(x)] = pygame.font.SysFont("assets/fonts/Trump Town Pro.otf", x)
 
         self.nativeSize = size
