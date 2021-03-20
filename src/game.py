@@ -17,7 +17,7 @@ class Game(object):
         """
         Loads the game from a save file, creates an empty game if the save is None
         """
-        save = json.loads(open(saveFile, "r"))
+        save = json.load(open(saveFile, "r"))
         self.map = Map(save['map'])
         self.player = Player(save['player'])
 
