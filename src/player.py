@@ -57,7 +57,6 @@ class Player(object):
         if event.type == pygame.locals.KEYDOWN:
             if event.key == pygame.locals.K_SPACE:
                 self.status = cst.ATTACK
-                print("HIT ME")
                 return "HIT"
 
     @property
