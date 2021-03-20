@@ -6,10 +6,11 @@ from src.map import Map
 from src.player import Player
 import pygame
 from src.ennemy import Ennemy
+from src.menu import Menu, Button
 
 
 class Game(object):
-    def __init__(self, saveFile=None):
+    def __init__(self, screen, saveFile=None):
         self.isRunning = False
         if saveFile is None:
             self.map = Map("assets/maps/default.json")
@@ -18,6 +19,20 @@ class Game(object):
             self.load(saveFile)
 
         self.ennemyController = EnnemyController(0)
+        # button_load = Button((300, 500), (300, 60), "Charger une partie", exit)
+        # button_load.build(screen)
+
+        button_help = Button((700, 300), (300, 60), "How to Build Walls", exit)
+        button_help.build(screen)
+        button_quit = Button((1500, 300), (300, 60), "Quit", self.stop)
+        button_quit.build(screen)
+        # pygame.image.load("assets/img/background.jpg")
+        self.pauseMenu = Menu(None, [button_help, button_quit], True)
+
+        button_resume = Button((300, 300), (300, 60), "Resume", self.pauseMenu.stop)
+        button_resume.build(screen)
+        self.pauseMenu.buttons.append(button_resume)
+        
 
     def load(self, saveFile):
         """
@@ -31,7 +46,7 @@ class Game(object):
         for event in screen.events():
             if event.type == pygame.locals.KEYDOWN:
                 if event.key == pygame.locals.K_ESCAPE:
-                    print("oui")
+                    self.pauseMenu.run(screen, self)
 
         self.player.update(screen)
         self.ennemyController.update(screen)
@@ -40,18 +55,18 @@ class Game(object):
         self.map.draw(screen, (self.player.get_map_position(), 0))
         self.ennemyController.draw(screen)
         self.player.draw(screen)
-
-        screen.flip()
+    
+    def stop(self):
+        self.isRunning = False
+        self.pauseMenu.stop()
 
     def run(self, screen):
         self.isRunning = True
         while self.isRunning:
             self.update(screen)
             self.draw(screen)
+            screen.flip()
 
-class PauseMenu(object):
-    def __init__(self):
-        self.hi = ""
 
 class EnnemyController(object):
     def __init__(self, difficulty):
