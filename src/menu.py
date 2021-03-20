@@ -40,6 +40,7 @@ class Menu(object):
         while self.running:
             if game:
                 game.draw(screen)
+                screen.blit(game.closeMenu, (10, 10))
             self.update(screen)
             self.draw(screen)
 
