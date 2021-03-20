@@ -9,19 +9,6 @@ class Menu(object):
         self.pointerImg = pygame.transform.scale(pygame.image.load("assets/img/cursor.png"), (60, 80))
         self.pointerImg_rect = self.pointerImg.get_rect()
         pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
-        self.title = "Stop the count!"
-        self.title2 = "______________" 
-        self.title3 = "____________________" 
-        self.iVoted = pygame.transform.scale(pygame.image.load("assets/img/Ivoted.jpg").convert_alpha(), (300, 200))
-
-    def rot_center(self, image, angle):
-        """ Rotations en gardant l'image au centre """
-        orig_rect = image.get_rect()
-        rot_image = pygame.transform.rotate(image, angle)
-        rot_rect = orig_rect.copy()
-        rot_rect.center = rot_image.get_rect().center
-        rot_image = rot_image.subsurface(rot_rect).copy()
-        return rot_image
 
     def update(self, screen):
         for event in screen.events():
@@ -36,10 +23,6 @@ class Menu(object):
     def draw(self, screen):
         if self.background is not None:
             screen.blit(self.background, (0, 0))
-            screen.blit(screen.fonts["200"].render(self.title, 1, (220, 20, 60)), (200, 70)) 
-            screen.blit(screen.fonts["200"].render(self.title2, 1, (220, 20, 60)), (200, 90))
-            screen.blit(screen.fonts["200"].render(self.title3, 1, (220, 20, 60)), (200, 110))
-            screen.blit(self.iVoted, (1450, 150))
         for button in self.buttons:
             button.draw(screen)
         screen.blit(self.pointerImg, self.pointerImg_rect)

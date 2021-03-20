@@ -4,6 +4,7 @@ import random
 
 from src.map import Map
 from src.player import Player
+import pygame
 from src.ennemy import Ennemy
 
 
@@ -28,7 +29,9 @@ class Game(object):
 
     def update(self, screen):
         for event in screen.events():
-            pass
+            if event.type == pygame.locals.KEYDOWN:
+                if event.key == pygame.locals.K_ESCAPE:
+                    print("oui")
 
         self.player.update(screen)
         self.ennemyController.update(screen)
@@ -46,6 +49,9 @@ class Game(object):
             self.update(screen)
             self.draw(screen)
 
+class PauseMenu(object):
+    def __init__(self):
+        self.hi = ""
 
 class EnnemyController(object):
     def __init__(self, difficulty):
