@@ -14,7 +14,8 @@ class Menu(object):
                     button.click(event.pos)
 
     def draw(self, screen):
-        screen.blit(self.background, (0, 0))
+        if self.background is not None:
+            screen.blit(self.background, (0, 0))
         for button in self.buttons:
             button.draw(screen)
 
@@ -35,7 +36,8 @@ class Button(object):
 
     def build(self, screen):
         self.image = pygame.Surface((self.size))
-        self.image.blit(screen.fonts["25"].render(self.text, 1, (255, 255, 255)), (0, 0))
+        textImage = screen.fonts["25"].render(self.text, 1, (255, 255, 255))
+        self.image.blit(textImage, (self.image.get_size()[0] / 2.5, self.image.get_size()[1] / 3))
 
     def draw(self, screen):
         screen.blit(self.image, self.position)

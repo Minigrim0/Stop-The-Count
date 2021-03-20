@@ -5,7 +5,7 @@ from src.screen import Screen
 
 pygame.init()
 
-screen = Screen((1920, 1080), "Stop the count!", fullScreen=False)
+screen = Screen((1920, 1080), "Stop the count!", fullScreen=True)
 
 button_play = Button((835, 200), (250, 40), "Jouer", None)
 button_quit = Button((835, 300), (250, 40), "Quitter", exit)
