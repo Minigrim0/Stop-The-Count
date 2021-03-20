@@ -22,7 +22,7 @@ class Game(object):
         self.openMenu = screen.fonts["25"].render(self.openMenu, 1, (255, 255, 255))
         self.closeMenu = "[Esc] Close Menu"
         self.closeMenu = screen.fonts["25"].render(self.closeMenu, 1, (255, 255, 255))
-        self.ennemyController = EnnemyController(0)
+        self.ennemyController = EnnemyController(5)
         button_help = Button((700, 300), (300, 60), "How to Build Walls", exit)
         button_help.build(screen)
         button_save = Button((1100, 300), (300, 60), "Save", exit)
