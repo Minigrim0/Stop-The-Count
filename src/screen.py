@@ -5,7 +5,6 @@ from pygame.locals import MOUSEBUTTONDOWN, MOUSEMOTION
 
 
 class Screen(object):
-
     def __init__(self, size, name, fullScreen=True):
         info = pygame.display.Info()
 
@@ -51,8 +50,7 @@ class Screen(object):
             self.fenetreAffiche = pygame.display.set_mode(
                 self.fullSize, pygame.locals.FULLSCREEN)
         else:
-            self.fenetreAffiche = pygame.display.set_mode(
-                size, pygame.locals.RESIZABLE)
+            self.fenetreAffiche = pygame.display.set_mode(size)
 
         taillex = size[0]/self.nativeSize[0]
         tailley = size[1]/self.nativeSize[1]
@@ -66,14 +64,15 @@ class Screen(object):
     def flip(self):
         self.update()
         # self.fenetre.blit(self.ScaleButton, self.ScaleRect.topleft)
-        self.fenetreAffiche.blit(
-            pygame.transform.smoothscale(
-                self.fenetre, (
-                    int(self.nativeSize[0]*self.taille),
-                    int(self.nativeSize[1]*self.taille)
-                )
-            ), self.posAffiche
-        )
+        # self.fenetreAffiche.blit(
+        #     pygame.transform.smoothscale(
+        #         self.fenetre, (
+        #             int(self.nativeSize[0]*self.taille),
+        #             int(self.nativeSize[1]*self.taille)
+        #         )
+        #     ), self.posAffiche
+        # )
+        self.fenetreAffiche.blit(self.fenetre, (0, 0))
         pygame.display.flip()
 
     def blit(self, Surface, Pos):
