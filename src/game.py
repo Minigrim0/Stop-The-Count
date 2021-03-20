@@ -17,7 +17,7 @@ class Game(object):
         else:
             self.load(saveFile)
 
-        self.ennemyController = EnnemyController(1)
+        self.ennemyController = EnnemyController(5)
 
     def load(self, saveFile):
         """
@@ -29,6 +29,10 @@ class Game(object):
 
     def update(self, screen):
         for event in screen.events():
+            action = self.player.eventUpdate(event)
+            if action == "HIT":
+                self.ennemyController.hit(self.player.hitbox, self.player.damage)
+
             if event.type == pygame.locals.KEYDOWN:
                 if event.key == pygame.locals.K_ESCAPE:
                     print("oui")
@@ -37,7 +41,7 @@ class Game(object):
         self.ennemyController.update(screen)
 
     def draw(self, screen):
-        self.map.draw(screen, (self.player.get_map_position(), 0))
+        self.map.draw(screen, self.player)
         self.ennemyController.draw(screen)
         self.player.draw(screen)
 
@@ -49,9 +53,11 @@ class Game(object):
             self.update(screen)
             self.draw(screen)
 
+
 class PauseMenu(object):
     def __init__(self):
         self.hi = ""
+
 
 class EnnemyController(object):
     def __init__(self, difficulty):
@@ -80,3 +86,10 @@ class EnnemyController(object):
     def draw(self, screen):
         for ennemy in self.ennemies:
             ennemy.draw(screen)
+
+    def hit(self, hitbox, damage):
+        for ennemy in self.ennemies[:]:
+            if ennemy.hurtbox.colliderect(hitbox):
+                result = ennemy.hit(damage)
+                if result == "DEAD":
+                    del self.ennemies[self.ennemies.index(ennemy)]
