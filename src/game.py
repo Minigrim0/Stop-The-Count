@@ -22,12 +22,19 @@ class Game(object):
         self.player = Player(save['player'])
 
     def update(self, screen):
-        pass
+        for event in screen.events():
+            pass
+
+        self.player.update(screen)
 
     def draw(self, screen):
-        self.map.draw(screen, (0, 0))
+        self.map.draw(screen, (self.player.get_map_position(), 0))
+        self.player.draw(screen)
+
+        screen.flip()
 
     def run(self, screen):
+        self.isRunning = True
         while self.isRunning:
-            self.update()
-            self.draw()
+            self.update(screen)
+            self.draw(screen)
