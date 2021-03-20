@@ -2,6 +2,7 @@ import json
 
 from src.map import Map
 from src.player import Player
+import pygame
 
 
 class Game(object):
@@ -23,7 +24,9 @@ class Game(object):
 
     def update(self, screen):
         for event in screen.events():
-            pass
+            if event.type == pygame.locals.KEYDOWN:
+                if event.key == pygame.locals.K_ESCAPE:
+                    print("oui")
 
         self.player.update(screen)
 
@@ -38,3 +41,7 @@ class Game(object):
         while self.isRunning:
             self.update(screen)
             self.draw(screen)
+
+class PauseMenu(object):
+    def __init__(self):
+        self.hi = ""
