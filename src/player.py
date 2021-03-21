@@ -1,5 +1,6 @@
 import os
 import glob
+import time
 
 import pygame
 
@@ -22,8 +23,11 @@ class Player(object):
             else:
                 self.images[animation].append(pygame.image.load(filename).convert_alpha())
 
+        self.size = (205, 415)
         self.velocity = [0, 0]
         self.speed = 400
+
+        self.attackCooldown = 0
 
         self.status = cst.IDLE
         self.damage = 30
@@ -42,11 +46,11 @@ class Player(object):
     def update(self, screen):
         if pygame.key.get_pressed()[pygame.locals.K_UP]:
             self.velocity[1] = -1
-            if self.position[1] < screen.nativeSize[1] - 490 - self.image.get_size()[1]:
+            if self.position[1] < screen.nativeSize[1] - 490 - self.size[1]:
                 self.velocity[1] = 0
         if pygame.key.get_pressed()[pygame.locals.K_DOWN]:
             self.velocity[1] = 1
-            if self.position[1] > screen.nativeSize[1] - self.image.get_size()[1]:
+            if self.position[1] > screen.nativeSize[1] - self.size[1]:
                 self.velocity[1] = 0
         if pygame.key.get_pressed()[pygame.locals.K_LEFT]:
             self.velocity[0] = -1
@@ -56,6 +60,11 @@ class Player(object):
             self.velocity[0] = 1
 
         self.move(screen.timeElapsed)
+
+        if self.attackCooldown > 0:
+            self.attackCooldown -= screen.timeElapsed
+            if self.attackCooldown <= 0:
+                self.status = cst.IDLE
 
     def move(self, timeElapsed):
         if self.position[0] < 500:
@@ -72,8 +81,9 @@ class Player(object):
 
     def eventUpdate(self, event):
         if event.type == pygame.locals.KEYDOWN:
-            if event.key == pygame.locals.K_SPACE:
+            if event.key == pygame.locals.K_SPACE and self.attackCooldown <= 0:
                 self.status = cst.ATTACK
+                self.attackCooldown = cst.ATTACK_COOLDOWN / 1000
                 return "HIT"
 
     @property
