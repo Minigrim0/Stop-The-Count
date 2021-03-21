@@ -16,7 +16,7 @@ from src.twat import Twat
 
 
 class Game(object):
-    def __init__(self, screen, tutorialMenu, saveFile=None):
+    def __init__(self, screen, tutorialMenu, fakeNewsMenu, saveFile=None):
         self.isRunning = False
         if saveFile is None:
             self.map = Map("assets/maps/default.json")
@@ -32,9 +32,12 @@ class Game(object):
         button_help = Button((700, 300), (300, 60), "How to Build Walls", tutorialMenu.run, screen=screen)
         button_help.build(screen)
 
+        button_fakeNewsMenu = Button((1100, 300), (300, 60), "Fake News", fakeNewsMenu.run, screen=screen)
+        button_fakeNewsMenu.build(screen)
+
         button_quit = Button((1500, 300), (300, 60), "Quit", self.stop)
         button_quit.build(screen)
-        self.pauseMenu = Menu(None, [button_help, button_quit], True)
+        self.pauseMenu = Menu(None, [button_help, button_fakeNewsMenu, button_quit], True)
 
         self.winMenu = Menu(pygame.image.load("assets/img/youWon.jpg"), [], True)
         button_continue = Button((10, 1000), (300, 60), "4 Years Later >>", self.winMenu.stop)
