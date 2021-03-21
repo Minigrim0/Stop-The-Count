@@ -29,11 +29,13 @@ class Player(object):
             file, ext = os.path.splitext(file)
             sound, index = file.split("_")
             if sound not in self.sounds.keys():
-                self.sounds[sound] = [
-                    pygame.mixer.Sound(filename)
-                ]
+                newSound = pygame.mixer.Sound(filename)
+                newSound.set_volume(0.5)
+                self.sounds[sound] = [newSound]
             else:
-                self.sounds[sound].append(pygame.mixer.Sound(filename))
+                newSound = pygame.mixer.Sound(filename)
+                newSound.set_volume(0.5)
+                self.sounds[sound].append(newSound)
 
         self.size = (205, 415)
         self.velocity = [0, 0]
