@@ -52,7 +52,7 @@ class Ennemy(object):
         if self.animstate > len(self.images["walk"]):
             self.animstate = 0
 
-        if self.health < 0:
+        if self.health <= 0:
             return "DEAD"
         if self.position[0] < 0:
             return "DEMOCRAT_ADDVOTE"
