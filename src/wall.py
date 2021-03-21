@@ -33,8 +33,12 @@ class Wall(object):
 
         if self.health > 0:
             self.healthbar.update(self.health)
+        else:
+            return "DEAD"
 
     def collide(self, ennemy):
         if ennemy.collisionbox.colliderect(self.collisionbox):
-            self.health -= 1
+            if ennemy.can_attack:
+                ennemy.attack()
+                self.health -= 1
             ennemy.velAngle = 120
