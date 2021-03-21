@@ -62,6 +62,11 @@ class Player(object):
         self.specialAttackBar = pygame.Surface((10, 200))
 
         self.popularity = 50  # Keep it above 50
+        self.popularityBarBack = pygame.Surface((1500, 25))
+        self.popularityText = pygame.Surface((25, 20))
+        self.popularityBarBack.fill((0, 0, 255))
+        self.popularityBar = pygame.Surface((round(1500 * self.popularity / 100), 25))
+        self.popularityBar.fill((255, 0, 0))
 
         self.status = cst.IDLE
         self.damage = 30
@@ -85,11 +90,21 @@ class Player(object):
     def get_map_position(self):
         return self.map_pos
 
-    def updateUI(self):
+    def updateAttackBar(self):
         self.specialAttackBar = pygame.Surface((10, round((self.specialAttack / cst.SPECIAL_ATTACK_COST) * 200)))
         self.specialAttackBar.fill((255, 0, 255))
 
+    def updatePopularity(self, screen):
+        self.popularityBar = pygame.Surface((round(1500 * self.popularity / 100), 25))
+        self.popularityBar.fill((255, 0, 0))
+
+        self.popularityText = screen.fonts["25"].render(f"{round(self.popularity, 2)}%", 0, (255, 255, 255))
+
     def drawUI(self, screen):
+        screen.blit(self.popularityBarBack, (210, 1000))
+        screen.blit(self.popularityBar, (210, 1000))
+        screen.blit(self.popularityText, ((1920 - self.popularityText.get_size()[0]) // 2, 1000))
+
         screen.blit(self.specialAttackBarBack, (self.position[0] - 10, self.position[1] + ((self.size[1] - 200) // 2)))
         if self.attackCooldown < cst.SPECIAL_ATTACK_COST:
             screen.blit(
@@ -134,7 +149,7 @@ class Player(object):
         self.move(screen.timeElapsed, ennemyController, invocations)
         if self.specialAttack < cst.SPECIAL_ATTACK_COST:
             self.specialAttack += screen.timeElapsed
-            self.updateUI()
+            self.updateAttackBar()
 
         if self.attackCooldown > 0:
             self.attackCooldown -= screen.timeElapsed
@@ -149,7 +164,7 @@ class Player(object):
     def addSpecialAttack(self, value):
         if self.specialAttack < cst.SPECIAL_ATTACK_COST:
             self.specialAttack = min(self.specialAttack + value, cst.SPECIAL_ATTACK_COST)
-            self.updateUI()
+            self.updateAttackBar()
 
     def move(self, timeElapsed, ennemyController, invocations):
         if self.position[0] < 500:
@@ -169,7 +184,6 @@ class Player(object):
         self.velocity[1] -= self.velocity[1] * 0.1
 
     def eventUpdate(self, event):
-        print(self.specialAttack)
         if event.type == pygame.locals.KEYDOWN:
             if event.key in cst.ATTACK_KEYS and self.attackCooldown <= 0:
                 if event.key == pygame.locals.K_x:
@@ -186,7 +200,7 @@ class Player(object):
                 return "HIT"
             elif event.key == pygame.locals.K_RETURN and self.specialAttack >= 25:
                 self.specialAttack = 0
-                self.updateUI()
+                self.updateAttackBar()
                 pygame.mixer.Sound.play(self.wall_building_sound)
                 return "BUILDWALL"
 
