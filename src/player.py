@@ -47,6 +47,8 @@ class Player(object):
 
         self.wall_building_sound = pygame.mixer.Sound("assets/sound/build a wall.wav")
         self.wall_building_sound.set_volume(0.5)
+        self.fakeNews_sound = pygame.mixer.Sound("assets/sound/fakeNews.wav")
+        self.fakeNews_sound.set_volume(0.5)
 
         self.size = (205, 415)
         self.velocity = [0, 0]
@@ -192,12 +194,17 @@ class Player(object):
                     self.attackType = 3
                 elif event.key == pygame.locals.K_v:
                     self.attackType = 2
-                elif event.key == pygame.locals.K_SPACE:
-                    self.attackType = 1
                 self.status = cst.ATTACK
                 self.attackCooldown = cst.ATTACK_COOLDOWN / 1000
                 pygame.mixer.Sound.play(random.choice(self.sounds["attack"]))
                 return "HIT"
+            elif event.key == pygame.locals.K_SPACE and self.attackCooldown <= 0 and self.specialAttack >= 13:
+                self.attackType = 1
+                pygame.mixer.Sound.play(self.fakeNews_sound)
+                self.status = cst.ATTACK
+                self.attackCooldown = cst.ATTACK_COOLDOWN / 1000
+                self.specialAttack -= 13
+                return "KAMEHAMEHA"
             elif event.key == pygame.locals.K_RETURN and self.specialAttack >= 25:
                 self.specialAttack = 0
                 self.updateAttackBar()
