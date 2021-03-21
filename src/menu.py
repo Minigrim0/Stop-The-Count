@@ -54,6 +54,7 @@ class Button(object):
         self.callback = callback
         self.callback_args = callbackargs
         self.hover = False
+        self.clickable = True
 
     def build(self, screen):
         self.image = pygame.Surface(self.size)
@@ -78,5 +79,5 @@ class Button(object):
         return False
 
     def click(self, position):
-        if self.collide(position):
+        if self.clickable and self.collide(position):
             self.callback(**self.callback_args)
