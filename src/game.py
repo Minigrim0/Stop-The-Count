@@ -8,11 +8,13 @@ import pygame
 from src.ennemy import Ennemy
 from src.menu import Menu, Button
 from src.ballot import Ballot
+import src.constants as cst
+import datetime
 from src.wall import Wall
 
 
 class Game(object):
-    def __init__(self, screen, saveFile=None):
+    def __init__(self, screen, tutorialMenu, saveFile=None):
         self.isRunning = False
         if saveFile is None:
             self.map = Map("assets/maps/default.json")
@@ -25,7 +27,7 @@ class Game(object):
         self.closeMenu = "[Esc] Close Menu"
         self.closeMenu = screen.fonts["25"].render(self.closeMenu, 1, (255, 255, 255))
         self.ennemyController = EnnemyController(5)
-        button_help = Button((700, 300), (300, 60), "How to Build Walls", exit)
+        button_help = Button((700, 300), (300, 60), "How to Build Walls", tutorialMenu.run, screen=screen)
         button_help.build(screen)
         button_save = Button((1100, 300), (300, 60), "Save", exit)
         button_save.build(screen)
@@ -37,6 +39,8 @@ class Game(object):
         button_resume = Button((300, 300), (300, 60), "Resume", self.pauseMenu.stop)
         button_resume.build(screen)
         self.pauseMenu.buttons.append(button_resume)
+        self.gameEndTime = cst.GAME_TIME
+        
 
         self.ballots = {
             "republican": Ballot((1800, 20), "assets/img/republican.png"),
@@ -52,6 +56,7 @@ class Game(object):
         self.player = Player(save['player'])
 
     def update(self, screen):
+        self.gameEndTime = int(self.gameEndTime - screen.timeElapsed)
         for event in screen.events():
             action = self.player.eventUpdate(event)
             if action == "HIT":
@@ -100,12 +105,17 @@ class Game(object):
         self.isRunning = False
         self.pauseMenu.stop()
 
+    def getTimeDisplay(self):
+        return str(datetime.timedelta(seconds=self.gameEndTime))
+
     def run(self, screen):
         self.isRunning = True
         while self.isRunning:
             self.update(screen)
             self.draw(screen)
             screen.blit(self.openMenu, (10, 10))
+            self.gameEndTimeDisplay = screen.fonts["75"].render(self.getTimeDisplay(), 0, (255, 255, 255))
+            screen.blit(self.gameEndTimeDisplay, (10, 30))
             screen.flip()
 
 

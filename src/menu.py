@@ -41,6 +41,7 @@ class Menu(object):
             if game:
                 game.draw(screen)
                 screen.blit(game.closeMenu, (10, 10))
+                screen.blit(game.gameEndTimeDisplay, (10, 30))
             self.update(screen)
             self.draw(screen)
 
