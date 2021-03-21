@@ -89,6 +89,15 @@ class Player(object):
 
         self.drawUI(screen)
 
+        if self.attackType == 1:  # High Kick
+            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_HIGH_KICK[0], self.position[1]), cst.HITBOX_HIGH_KICK[2:]), wifth=1)
+        elif self.attackType == 2:  # Low Kick
+            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_LOW_KICK[0], self.position[1]), cst.HITBOX_LOW_KICK[2:]), wifth=1)
+        elif self.attackType == 3:  # KAMEHA
+            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_KAMEHA[0], self.position[1]), cst.HITBOX_KAMEHA[2:]), wifth=1)
+        else:  # Classic Hit
+            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_RELATIVE[0], self.position[1]), cst.HITBOX_RELATIVE[2:]), wifth=1)
+
     def get_map_position(self):
         return self.map_pos
 
@@ -188,18 +197,18 @@ class Player(object):
     def eventUpdate(self, event):
         if event.type == pygame.locals.KEYDOWN:
             if event.key in cst.ATTACK_KEYS and self.attackCooldown <= 0:
-                if event.key == pygame.locals.K_x:
+                if event.key == pygame.locals.K_x:  # Classic hit
                     self.attackType = 0
-                elif event.key == pygame.locals.K_c:
-                    self.attackType = 3
-                elif event.key == pygame.locals.K_v:
+                elif event.key == pygame.locals.K_c:  # High Kick
+                    self.attackType = 1
+                elif event.key == pygame.locals.K_v:  # Low kick
                     self.attackType = 2
                 self.status = cst.ATTACK
                 self.attackCooldown = cst.ATTACK_COOLDOWN / 1000
                 pygame.mixer.Sound.play(random.choice(self.sounds["attack"]))
                 return "HIT"
             elif event.key == pygame.locals.K_SPACE and self.attackCooldown <= 0 and self.specialAttack >= 13:
-                self.attackType = 1
+                self.attackType = 3
                 pygame.mixer.Sound.play(self.fakeNews_sound)
                 self.status = cst.ATTACK
                 self.attackCooldown = cst.ATTACK_COOLDOWN / 1000
@@ -213,4 +222,11 @@ class Player(object):
 
     @property
     def hitbox(self):
-        return pygame.Rect((self.position[0] + cst.HITBOX_RELATIVE[0], self.position[1]), cst.HITBOX_RELATIVE[2:])
+        if self.attackType == 1:  # High Kick
+            return pygame.Rect((self.position[0] + cst.HITBOX_HIGH_KICK[0], self.position[1]), cst.HITBOX_HIGH_KICK[2:])
+        elif self.attackType == 2:  # Low Kick
+            return pygame.Rect((self.position[0] + cst.HITBOX_LOW_KICK[0], self.position[1]), cst.HITBOX_LOW_KICK[2:])
+        elif self.attackType == 3:  # KAMEHA
+            return pygame.Rect((self.position[0] + cst.HITBOX_KAMEHA[0], self.position[1]), cst.HITBOX_KAMEHA[2:])
+        else:  # Classic Hit
+            return pygame.Rect((self.position[0] + cst.HITBOX_RELATIVE[0], self.position[1]), cst.HITBOX_RELATIVE[2:])
