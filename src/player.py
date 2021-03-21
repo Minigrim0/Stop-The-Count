@@ -47,14 +47,17 @@ class Player(object):
 
         self.size = (205, 415)
         self.velocity = [0, 0]
-        self.speed = 400
+        self.speed = 500
 
         self.attackCooldown = 0
+        self.walkCooldown = 0
+        self.whichFoot = 0
 
         self.specialAttack = 0
 
         self.status = cst.IDLE
         self.damage = 30
+        self.attackType = 0
 
         self.map_pos = 0
 
@@ -63,27 +66,39 @@ class Player(object):
             screen.blit(self.images["idle"][0], self.position)
             screen.blit(self.expressions["meh"], self.position)
         elif self.status == cst.ATTACK:
-            screen.blit(self.images["attack"][0], self.position)
+            screen.blit(self.images["attack"][self.attackType], self.position)
             screen.blit(self.expressions["angry"], self.position)
+        elif self.status == cst.WALK:
+            screen.blit(self.images["walk"][self.whichFoot], self.position)
+            screen.blit(self.expressions["meh"], self.position)
 
     def get_map_position(self):
         return self.map_pos
 
     def update(self, screen, ennemyController, invocations):
-        if pygame.key.get_pressed()[pygame.locals.K_UP]:
-            self.velocity[1] = -1
-            if self.position[1] < screen.nativeSize[1] - 490 - self.size[1]:
-                self.velocity[1] = 0
-        if pygame.key.get_pressed()[pygame.locals.K_DOWN]:
-            self.velocity[1] = 1
-            if self.position[1] > screen.nativeSize[1] - self.size[1]:
-                self.velocity[1] = 0
-        if pygame.key.get_pressed()[pygame.locals.K_LEFT]:
-            self.velocity[0] = -1
-            if self.position[0] < 20:
-                self.velocity[0] = 0
-        if pygame.key.get_pressed()[pygame.locals.K_RIGHT]:
-            self.velocity[0] = 1
+        if self.walkCooldown <= 0:
+            if pygame.key.get_pressed()[pygame.locals.K_UP]:
+                self.velocity[1] = -1
+                self.status = cst.WALK
+                self.walkCooldown = cst.WALK_COOLDOWN / 1000
+                if self.position[1] < screen.nativeSize[1] - 490 - self.size[1]:
+                    self.velocity[1] = 0
+            if pygame.key.get_pressed()[pygame.locals.K_DOWN]:
+                self.velocity[1] = 1
+                self.status = cst.WALK
+                self.walkCooldown = cst.WALK_COOLDOWN / 1000
+                if self.position[1] > screen.nativeSize[1] - self.size[1]:
+                    self.velocity[1] = 0
+            if pygame.key.get_pressed()[pygame.locals.K_LEFT]:
+                self.velocity[0] = -1
+                self.status = cst.WALK
+                self.walkCooldown = cst.WALK_COOLDOWN / 1000
+                if self.position[0] < 20:
+                    self.velocity[0] = 0
+            if pygame.key.get_pressed()[pygame.locals.K_RIGHT]:
+                self.status = cst.WALK
+                self.walkCooldown = cst.WALK_COOLDOWN / 1000
+                self.velocity[0] = 1
 
         self.move(screen.timeElapsed, ennemyController, invocations)
         self.specialAttack += screen.timeElapsed
@@ -92,6 +107,12 @@ class Player(object):
             self.attackCooldown -= screen.timeElapsed
             if self.attackCooldown <= 0:
                 self.status = cst.IDLE
+        elif self.walkCooldown > 0:
+            self.walkCooldown -= screen.timeElapsed
+            if self.walkCooldown <= 0:
+                self.status = cst.IDLE
+                self.whichFoot = 1 - self.whichFoot    
+
 
     def move(self, timeElapsed, ennemyController, invocations):
         if self.position[0] < 500:
@@ -113,7 +134,15 @@ class Player(object):
     def eventUpdate(self, event):
         print(self.specialAttack)
         if event.type == pygame.locals.KEYDOWN:
-            if event.key == pygame.locals.K_SPACE and self.attackCooldown <= 0:
+            if event.key in cst.ATTACK_KEYS and self.attackCooldown <= 0:
+                if event.key == pygame.locals.K_x:
+                    self.attackType = 0
+                elif event.key == pygame.locals.K_c:
+                    self.attackType = 3
+                elif event.key == pygame.locals.K_v:
+                    self.attackType = 2
+                elif event.key == pygame.locals.K_SPACE:
+                    self.attackType = 1
                 self.status = cst.ATTACK
                 self.attackCooldown = cst.ATTACK_COOLDOWN / 1000
                 pygame.mixer.Sound.play(random.choice(self.sounds["attack"]))
