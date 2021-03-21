@@ -1,5 +1,7 @@
 import random
 import math
+import glob
+import os
 
 import pygame
 
@@ -9,6 +11,18 @@ import src.constants as cst
 
 class Ennemy(object):
     def __init__(self):
+        self.images = {}
+        for filename in glob.glob("assets/img/ennemy/*.png"):
+            dirname, file = os.path.split(filename)
+            file, ext = os.path.splitext(file)
+            animation, index = file.split("_")
+            if animation not in self.images.keys():
+                self.images[animation] = [
+                    pygame.image.load(filename).convert_alpha()
+                ]
+            else:
+                self.images[animation].append(pygame.image.load(filename).convert_alpha())
+
         self.image = pygame.image.load("assets/img/player/animation/idle_1.png").convert_alpha()
         self.speed = random.randrange(200, 420)
         self.position = [1920, random.randrange(500 - self.image.get_size()[1], 1080 - self.image.get_size()[1])]
@@ -17,11 +31,16 @@ class Ennemy(object):
         self.velAngle = 270  # degrees (Not a mathematician here)
         self.velocity = [-1, 0]
 
+        self.animstate = 0
+
     def update(self, screen):
         if self.velAngle < 270:
             self.velocity[0] = math.sin(self.velAngle * math.pi / 180)
             self.velAngle += 90 * screen.timeElapsed
         self.position[0] += self.speed * self.velocity[0] * screen.timeElapsed
+        self.animstate += screen.timeElapsed * 10
+        if self.animstate > len(self.images["walk"]):
+            self.animstate = 0
 
         if self.health < 0:
             return "DEAD"
@@ -40,7 +59,7 @@ class Ennemy(object):
         return False
 
     def draw(self, screen):
-        screen.blit(self.image, self.position)
+        screen.blit(self.images["walk"][min(round(self.animstate), len(self.images["walk"])-1)], self.position)
         self.healthBar.draw(
             screen,
             (
@@ -54,3 +73,7 @@ class Ennemy(object):
     @property
     def hurtbox(self):
         return pygame.Rect((self.position[0] + cst.HURTBOX_RELATIVE[0], self.position[1]), cst.HURTBOX_RELATIVE[2:])
+
+    @property
+    def collisionbox(self):
+        return pygame.Rect((self.position[0] + cst.COLLISION_RELATIVE[0], self.position[1]), cst.COLLISION_RELATIVE[2:])
