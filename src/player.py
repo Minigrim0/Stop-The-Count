@@ -23,6 +23,12 @@ class Player(object):
             else:
                 self.images[animation].append(pygame.image.load(filename).convert_alpha())
 
+        self.expressions = {}
+        for filename in glob.glob("assets/img/player/expressions/*.png"):
+            dirname, file = os.path.split(filename)
+            file, ext = os.path.splitext(file)
+            self.expressions[file] = pygame.image.load(filename).convert_alpha()
+
         self.sounds = {}
         for filename in glob.glob("assets/sound/player/*.wav"):
             dirname, file = os.path.split(filename)
@@ -51,8 +57,10 @@ class Player(object):
     def draw(self, screen):
         if self.status == cst.IDLE:
             screen.blit(self.images["idle"][0], self.position)
+            screen.blit(self.expressions["meh"], self.position)
         elif self.status == cst.ATTACK:
             screen.blit(self.images["attack"][0], self.position)
+            screen.blit(self.expressions["angry"], self.position)
 
     def get_map_position(self):
         return self.map_pos
