@@ -70,13 +70,15 @@ class Game(object):
                 if event.key == pygame.locals.K_ESCAPE:
                     self.pauseMenu.run(screen, self)
 
-        for inv in self.invocations:
-            inv.update(self.ennemyController)
+        for inv in self.invocations[:]:
+            result = inv.update(self.ennemyController)
+            if result == "DEAD":
+                del self.invocations[self.invocations.index(inv)]
 
         self.player.update(screen, self.ennemyController, self.invocations)
 
         deaths, democrat_votes = self.ennemyController.update(screen)
-        self.player.specialAttack += deaths * 5
+        self.player.addSpecialAttack(deaths * 5)
 
         for key, ballot in self.ballots.items():
             if key == "democrat":
