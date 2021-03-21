@@ -118,7 +118,7 @@ class Game(object):
             if result == "DEAD":
                 del self.invocations[self.invocations.index(inv)]
 
-        self.player.update(screen, self.ennemyController, self.invocations)
+        self.player.update(screen, self.ennemyController, self.invocations, self.twats)
 
         for twat in self.twats[:]:
             result = twat.update(screen)
@@ -128,7 +128,7 @@ class Game(object):
         deaths, baddeaths, democrat_votes, republican_votes = self.ennemyController.update(screen, self.player.popularity)
         self.player.addSpecialAttack(deaths * 5)
         for baddeath in range(baddeaths):
-            twat = Twat(screen, (random.randint(200, 1400), random.randint(30, 600)))
+            twat = Twat(screen, [random.randint(200, 1400), random.randint(30, 600)])
             self.twats.append(
                 twat
             )

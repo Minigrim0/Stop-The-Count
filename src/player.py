@@ -123,7 +123,7 @@ class Player(object):
         else:
             screen.blit(self.specialAttackBar, (self.position[0] - 10, self.position[1] + ((self.size[1] - 200) // 2)))
 
-    def update(self, screen, ennemyController, invocations):
+    def update(self, screen, ennemyController, invocations, twats):
         if self.walkCooldown <= 0:
             if pygame.key.get_pressed()[pygame.locals.K_UP]:
                 self.velocity[1] = -1
@@ -148,7 +148,7 @@ class Player(object):
                 self.walkCooldown = cst.WALK_COOLDOWN / 1000
                 self.velocity[0] = 1
 
-        self.move(screen.timeElapsed, ennemyController, invocations)
+        self.move(screen.timeElapsed, ennemyController, invocations, twats)
         if self.specialAttack < cst.SPECIAL_ATTACK_COST:
             self.specialAttack += screen.timeElapsed
             self.updateAttackBar()
@@ -168,7 +168,7 @@ class Player(object):
             self.specialAttack = min(self.specialAttack + value, cst.SPECIAL_ATTACK_COST)
             self.updateAttackBar()
 
-    def move(self, timeElapsed, ennemyController, invocations):
+    def move(self, timeElapsed, ennemyController, invocations, twats):
         if self.position[0] < 500:
             self.position[0] += self.speed * self.velocity[0] * timeElapsed
         elif self.velocity[0] < 0:
@@ -178,6 +178,8 @@ class Player(object):
             ennemyController.move(self.speed * self.velocity[0] * timeElapsed)
             for invocation in invocations:
                 invocation.move(-self.speed * self.velocity[0] * timeElapsed)
+            for twat in twats:
+                twat.position[0] -= self.speed * self.velocity[0] * timeElapsed
 
         self.position[1] += self.speed * self.velocity[1] * timeElapsed
         self.absolute_x += self.speed * self.velocity[0] * timeElapsed
