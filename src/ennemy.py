@@ -82,9 +82,10 @@ class Ennemy(object):
 
     @property
     def hurtbox(self):
-        return pygame.Rect((self.position[0] + cst.HURTBOX_RELATIVE[0], self.position[1]), cst.HURTBOX_RELATIVE[2:])
+        return pygame.Rect((self.position[0] + cst.ENNEMY_HURTBOX_RELATIVE[0], self.position[1]), cst.ENNEMY_HURTBOX_RELATIVE[2:])
 
     @property
     def collisionbox(self):
         return pygame.Rect(
-            (self.position[0] + cst.COLLISION_RELATIVE[0], self.position[1]), cst.COLLISION_RELATIVE[2:])
+            (self.position[0] + cst.ENNEMY_COLLISION_RELATIVE[0], self.position[1]), cst.ENNEMY_COLLISION_RELATIVE[2:]
+        )
