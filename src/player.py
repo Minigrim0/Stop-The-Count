@@ -1,3 +1,6 @@
+import os
+import glob
+
 import pygame
 
 import src.constants as cst
@@ -7,7 +10,18 @@ class Player(object):
     def __init__(self):
         self.images = []
         self.position = [0, 600]
-        self.image = pygame.image.load("assets/img/player/player_idle_1.png").convert_alpha()
+        self.images = {}
+        for filename in glob.glob("assets/img/player/animation/*.png"):
+            dirname, file = os.path.split(filename)
+            file, ext = os.path.splitext(file)
+            animation, index = file.split("_")
+            if animation not in self.images.keys():
+                self.images[animation] = [
+                    pygame.image.load(filename).convert_alpha()
+                ]
+            else:
+                self.images[animation].append(pygame.image.load(filename).convert_alpha())
+
         self.velocity = [0, 0]
         self.speed = 400
 
@@ -17,7 +31,10 @@ class Player(object):
         self.map_pos = 0
 
     def draw(self, screen):
-        screen.blit(self.image, self.position)
+        if self.status == cst.IDLE:
+            screen.blit(self.images["idle"][0], self.position)
+        elif self.status == cst.ATTACK:
+            screen.blit(self.images["attack"][0], self.position)
 
     def get_map_position(self):
         return self.map_pos
