@@ -21,3 +21,6 @@ pip install -r requirements.txt
 ```bash
 python3 main.py
 ```
+
+## Screenshot
+![screenshot1](assets/misc/screenshot.png)

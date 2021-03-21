@@ -104,7 +104,7 @@ class Screen(object):
                 if event.key == pygame.locals.K_F2:
                     pygame.image.save(
                         self.fenetre,
-                        "screen/{}.bmp".format(
+                        "{}.bmp".format(
                             time.strftime("%Y_%m_%d_%H_%M_%S")
                         )
                     )
