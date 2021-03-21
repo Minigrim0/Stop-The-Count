@@ -38,3 +38,25 @@ class Ballot(object):
         screen.blit(votes_img, vote_pos)
         for vote in self.pendingVotes:
             vote.draw(screen)
+
+
+class Vote(object):
+    def __init__(self, image, position, threshold_y):
+        self.image = image
+        self.position = position
+        self.threshold = threshold_y
+        self.speed = 200
+
+    def update(self, timeElapsed):
+        self.position[1] += self.speed * timeElapsed
+        return self.position[1] > self.threshold
+
+    def draw(self, screen):
+        if self.position[1] + self.image.get_size()[1] > self.threshold:
+            rect = pygame.Surface(
+                (self.image.get_size()[0], abs(self.position[1] - self.threshold))
+            )
+            rect.blit(self.image, (0, 0))
+            screen.blit(rect, self.position)
+        else:
+            screen.blit(self.image, self.position)
