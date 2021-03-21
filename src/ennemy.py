@@ -1,4 +1,5 @@
 import random
+import math
 
 import pygame
 
@@ -8,14 +9,18 @@ import src.constants as cst
 
 class Ennemy(object):
     def __init__(self):
-        self.image = pygame.image.load("assets/img/player/player_idle_1.png").convert_alpha()
+        self.image = pygame.image.load("assets/img/player/animation/idle_1.png").convert_alpha()
         self.speed = random.randrange(200, 420)
         self.position = [1920, random.randrange(500 - self.image.get_size()[1], 1080 - self.image.get_size()[1])]
         self.healthBar = HealthBar(100)
         self.health = 100
+        self.velAngle = 270  # degrees (Not a mathematician here)
         self.velocity = [-1, 0]
 
     def update(self, screen):
+        if self.velAngle < 270:
+            self.velocity[0] = math.sin(self.velAngle * math.pi / 180)
+            self.velAngle += 90 * screen.timeElapsed
         self.position[0] += self.speed * self.velocity[0] * screen.timeElapsed
 
     def hit(self, damage):
