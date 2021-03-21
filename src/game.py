@@ -8,6 +8,7 @@ import pygame
 from src.ennemy import Ennemy
 from src.menu import Menu, Button
 from src.ballot import Ballot
+from src.wall import Wall
 
 
 class Game(object):
@@ -31,6 +32,7 @@ class Game(object):
         button_quit = Button((1500, 300), (300, 60), "Quit", self.stop)
         button_quit.build(screen)
         self.pauseMenu = Menu(None, [button_help, button_save, button_quit], True)
+        self.invocations = []
 
         button_resume = Button((300, 300), (300, 60), "Resume", self.pauseMenu.stop)
         button_resume.build(screen)
@@ -54,13 +56,27 @@ class Game(object):
             action = self.player.eventUpdate(event)
             if action == "HIT":
                 self.ennemyController.hit(self.player.hitbox, self.player.damage)
+            elif action == "BUILDWALL":
+                self.invocations.append(
+                    Wall(
+                        [
+                            self.player.position[0] + 205,
+                            self.player.position[1]
+                        ]
+                    )
+                )
 
             if event.type == pygame.locals.KEYDOWN:
                 if event.key == pygame.locals.K_ESCAPE:
                     self.pauseMenu.run(screen, self)
 
-        self.player.update(screen)
+        for inv in self.invocations:
+            inv.update(self.ennemyController)
+
+        self.player.update(screen, self.ennemyController, self.invocations)
+
         deaths, democrat_votes = self.ennemyController.update(screen)
+        self.player.specialAttack += deaths * 5
 
         for key, ballot in self.ballots.items():
             if key == "democrat":
@@ -70,6 +86,9 @@ class Game(object):
     def draw(self, screen):
         self.map.draw(screen, self.player)
         self.ennemyController.draw(screen)
+        for inv in self.invocations:
+            inv.draw(screen)
+
         self.player.draw(screen)
 
         for key, ballot in self.ballots.items():
@@ -130,3 +149,7 @@ class EnnemyController(object):
             if ennemy.hurtbox.colliderect(hitbox):
                 ennemy.hit(damage)
                 ennemy.velAngle = 120
+
+    def move(self, delta):
+        for ennemy in self.ennemies:
+            ennemy.position[0] -= delta
