@@ -40,5 +40,5 @@ class Wall(object):
         if ennemy.collisionbox and ennemy.collisionbox.colliderect(self.collisionbox):
             if ennemy.can_attack:
                 ennemy.attack()
-                self.health -= 1
+                self.health -= 5
             ennemy.velAngle = 120
