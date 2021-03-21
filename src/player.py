@@ -1,6 +1,6 @@
 import os
 import glob
-import time
+import random
 
 import pygame
 
@@ -22,6 +22,18 @@ class Player(object):
                 ]
             else:
                 self.images[animation].append(pygame.image.load(filename).convert_alpha())
+
+        self.sounds = {}
+        for filename in glob.glob("assets/sound/player/*.wav"):
+            dirname, file = os.path.split(filename)
+            file, ext = os.path.splitext(file)
+            sound, index = file.split("_")
+            if sound not in self.sounds.keys():
+                self.sounds[sound] = [
+                    pygame.mixer.Sound(filename)
+                ]
+            else:
+                self.sounds[sound].append(pygame.mixer.Sound(filename))
 
         self.size = (205, 415)
         self.velocity = [0, 0]
@@ -84,6 +96,7 @@ class Player(object):
             if event.key == pygame.locals.K_SPACE and self.attackCooldown <= 0:
                 self.status = cst.ATTACK
                 self.attackCooldown = cst.ATTACK_COOLDOWN / 1000
+                pygame.mixer.Sound.play(random.choice(self.sounds["attack"]))
                 return "HIT"
 
     @property
