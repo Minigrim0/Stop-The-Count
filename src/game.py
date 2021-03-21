@@ -83,6 +83,8 @@ class Game(object):
             action = self.player.eventUpdate(event)
             if action == "HIT":
                 self.ennemyController.hit(self.player.hitbox, self.player.damage)
+            elif action == "KAMEHAMEHA":
+                self.ennemyController.hit(self.player.hitbox, 51)
             elif action == "BUILDWALL":
                 self.invocations.append(
                     Wall(
