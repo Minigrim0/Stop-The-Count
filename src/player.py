@@ -14,7 +14,7 @@ class Player(object):
         self.absolute_x = 0
         self.images = {}
 
-        for filename in glob.glob("assets/img/player/animation/*.png"):
+        for filename in sorted(glob.glob("assets/img/player/animation/*.png")):
             dirname, file = os.path.split(filename)
             file, ext = os.path.splitext(file)
             animation, index = file.split("_")
