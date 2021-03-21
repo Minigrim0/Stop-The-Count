@@ -7,6 +7,7 @@ from src.player import Player
 import pygame
 from src.ennemy import Ennemy
 from src.menu import Menu, Button
+from src.ballot import Ballot
 
 
 class Game(object):
@@ -35,6 +36,11 @@ class Game(object):
         button_resume.build(screen)
         self.pauseMenu.buttons.append(button_resume)
 
+        self.ballots = {
+            "republican": Ballot((1800, 20), "assets/img/republican.png"),
+            "democrat": Ballot((1800, 140), "assets/img/democrat.png"),
+        }
+
     def load(self, saveFile):
         """
         Loads the game from a save file, creates an empty game if the save is None
@@ -54,12 +60,20 @@ class Game(object):
                     self.pauseMenu.run(screen, self)
 
         self.player.update(screen)
-        self.ennemyController.update(screen)
+        deaths, democrat_votes = self.ennemyController.update(screen)
+
+        for key, ballot in self.ballots.items():
+            if key == "democrat":
+                ballot.add_votes(democrat_votes)
+            ballot.update(screen)
 
     def draw(self, screen):
         self.map.draw(screen, self.player)
         self.ennemyController.draw(screen)
         self.player.draw(screen)
+
+        for key, ballot in self.ballots.items():
+            ballot.draw(screen)
 
     def stop(self):
         self.isRunning = False
@@ -88,15 +102,24 @@ class EnnemyController(object):
         self.ennemySpawnChance = 10 * difficulty  # Ten percent chance of spawning each second
 
     def update(self, screen):
-        for ennemy in self.ennemies:
-            ennemy.update(screen)
-
         if time.time() - self.timeAtLastEnnemySpawn > self.minTimeBetweenEnnemySpawn:
             if time.time() - self.timeAtLastEnnemySpawnAttempt > 1:
                 self.timeAtLastEnnemySpawnAttempt = time.time()
                 if random.randint(0, 100) < self.ennemySpawnChance:
                     self.ennemies.append(Ennemy())
                     self.timeAtLastEnnemySpawn = time.time()
+
+        results = [0, 0]  # 0 deaths, 0 votes to add
+        for ennemy in self.ennemies:
+            result = ennemy.update(screen)
+            if result == "DEAD":
+                del self.ennemies[self.ennemies.index(ennemy)]
+                results[0] += 1
+            elif result == "ADDVOTE":
+                del self.ennemies[self.ennemies.index(ennemy)]
+                results[1] += 1
+
+        return results
 
     def draw(self, screen):
         for ennemy in self.ennemies:
@@ -105,7 +128,5 @@ class EnnemyController(object):
     def hit(self, hitbox, damage):
         for ennemy in self.ennemies[:]:
             if ennemy.hurtbox.colliderect(hitbox):
-                result = ennemy.hit(damage)
+                ennemy.hit(damage)
                 ennemy.velAngle = 120
-                if result == "DEAD":
-                    del self.ennemies[self.ennemies.index(ennemy)]
