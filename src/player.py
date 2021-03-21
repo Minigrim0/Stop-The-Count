@@ -54,6 +54,9 @@ class Player(object):
         self.whichFoot = 0
 
         self.specialAttack = 0
+        self.specialAttackBarBack = pygame.Surface((10, 200))
+        self.specialAttackBarBack.fill((50, 50, 50))
+        self.specialAttackBar = pygame.Surface((10, 200))
 
         self.status = cst.IDLE
         self.damage = 30
@@ -70,10 +73,33 @@ class Player(object):
             screen.blit(self.expressions["angry"], self.position)
         elif self.status == cst.WALK:
             screen.blit(self.images["walk"][self.whichFoot], self.position)
-            screen.blit(self.expressions["meh"], self.position)
+            screen.blit(self.expressions["happy"], self.position)
+
+        self.drawUI(screen)
 
     def get_map_position(self):
         return self.map_pos
+
+    def updateUI(self):
+        self.specialAttackBar = pygame.Surface((10, round((self.specialAttack / cst.SPECIAL_ATTACK_COST) * 200)))
+        self.specialAttackBar.fill((255, 0, 255))
+
+    def drawUI(self, screen):
+        screen.blit(self.specialAttackBarBack, (self.position[0] - 10, self.position[1] + ((self.size[1] - 200) // 2)))
+        if self.attackCooldown < cst.SPECIAL_ATTACK_COST:
+            screen.blit(
+                self.specialAttackBar,
+                (
+                    self.position[0] - 10,
+                    self.position[1] + (
+                        200 - (
+                            self.specialAttack / cst.SPECIAL_ATTACK_COST) * 200
+                        ) + (
+                            (self.size[1] - 200) // 2)
+                )
+            )
+        else:
+            screen.blit(self.specialAttackBar, (self.position[0] - 10, self.position[1] + ((self.size[1] - 200) // 2)))
 
     def update(self, screen, ennemyController, invocations):
         if self.walkCooldown <= 0:
@@ -101,7 +127,9 @@ class Player(object):
                 self.velocity[0] = 1
 
         self.move(screen.timeElapsed, ennemyController, invocations)
-        self.specialAttack += screen.timeElapsed
+        if self.specialAttack < cst.SPECIAL_ATTACK_COST:
+            self.specialAttack += screen.timeElapsed
+            self.updateUI()
 
         if self.attackCooldown > 0:
             self.attackCooldown -= screen.timeElapsed
@@ -111,8 +139,12 @@ class Player(object):
             self.walkCooldown -= screen.timeElapsed
             if self.walkCooldown <= 0:
                 self.status = cst.IDLE
-                self.whichFoot = 1 - self.whichFoot    
+                self.whichFoot = 1 - self.whichFoot
 
+    def addSpecialAttack(self, value):
+        if self.specialAttack < cst.SPECIAL_ATTACK_COST:
+            self.specialAttack = min(self.specialAttack + value, cst.SPECIAL_ATTACK_COST)
+            self.updateUI()
 
     def move(self, timeElapsed, ennemyController, invocations):
         if self.position[0] < 500:
@@ -149,6 +181,7 @@ class Player(object):
                 return "HIT"
             elif event.key == pygame.locals.K_RETURN and self.status == cst.IDLE and self.specialAttack >= 25:
                 self.specialAttack = 0
+                self.updateUI()
                 return "BUILDWALL"
 
     @property
