@@ -106,5 +106,6 @@ class EnnemyController(object):
         for ennemy in self.ennemies[:]:
             if ennemy.hurtbox.colliderect(hitbox):
                 result = ennemy.hit(damage)
+                ennemy.velAngle = 120
                 if result == "DEAD":
                     del self.ennemies[self.ennemies.index(ennemy)]
