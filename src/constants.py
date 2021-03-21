@@ -24,5 +24,5 @@ HIGH_KICK = 1
 LOW_KICK = 2
 
 SPECIAL_ATTACK_COST = 25
-ATTACK_KEYS = [pygame.locals.K_SPACE, pygame.locals.K_x, pygame.locals.K_c, pygame.locals.K_v]
+ATTACK_KEYS = [pygame.locals.K_x, pygame.locals.K_c, pygame.locals.K_v]
 GAME_TIME = 18000
