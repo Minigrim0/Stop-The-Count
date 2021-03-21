@@ -78,10 +78,18 @@ class Game(object):
             if self.ballots["republican"].votes > self.ballots["democrat"].votes:
                 self.winMenu.run(screen)
             else:
+                button_info = Button((100, 800), (700, 60), f'You : {self.ballots["republican"].votes} - Bedin : {self.ballots["democrat"].votes}', exit)
+                button_info.build(screen)
+                button_info.clickable = False
+                self.loseMenu.buttons.append(button_info)
                 self.loseMenu.run(screen)
             self.stop()
 
         if self.player.popularity < 20:
+            button_info = Button((100, 800), (500, 60), f"Your popularity went below 20% ... You Bad Boy", exit)
+            button_info.build(screen)
+            button_info.clickable = False
+            self.loseMenu.buttons.append(button_info)
             self.loseMenu.run(screen)
             self.stop()
 
