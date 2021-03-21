@@ -6,11 +6,13 @@ from src.map import Map
 from src.player import Player
 import pygame
 from src.ennemy import Ennemy
+from src.ally import Ally
 from src.menu import Menu, Button
 from src.ballot import Ballot
 import src.constants as cst
 import datetime
 from src.wall import Wall
+from src.twat import Twat
 
 
 class Game(object):
@@ -35,12 +37,12 @@ class Game(object):
         button_quit.build(screen)
         self.pauseMenu = Menu(None, [button_help, button_save, button_quit], True)
         self.invocations = []
+        self.twats = []
 
         button_resume = Button((300, 300), (300, 60), "Resume", self.pauseMenu.stop)
         button_resume.build(screen)
         self.pauseMenu.buttons.append(button_resume)
         self.gameEndTime = cst.GAME_TIME
-        
 
         self.ballots = {
             "republican": Ballot((1800, 20), "assets/img/republican.png"),
@@ -82,12 +84,23 @@ class Game(object):
 
         self.player.update(screen, self.ennemyController, self.invocations)
 
-        deaths, democrat_votes = self.ennemyController.update(screen)
+        for twat in self.twats[:]:
+            result = twat.update(screen)
+            if result == "DEAD":
+                del self.twats[self.twats.index(twat)]
+
+        deaths, baddeaths, democrat_votes, republican_votes = self.ennemyController.update(screen)
         self.player.addSpecialAttack(deaths * 5)
+        for baddeath in range(baddeaths):
+            self.twats.append(
+                Twat(screen, (random.randint(200, 1400), random.randint(30, 600)))
+            )
 
         for key, ballot in self.ballots.items():
             if key == "democrat":
                 ballot.add_votes(democrat_votes)
+            elif key == "republican":
+                ballot.add_votes(republican_votes)
             ballot.update(screen)
 
     def draw(self, screen):
@@ -97,6 +110,8 @@ class Game(object):
             inv.draw(screen)
 
         self.player.draw(screen)
+        for twat in self.twats:
+            twat.draw(screen)
 
         for key, ballot in self.ballots.items():
             ballot.draw(screen)
@@ -137,18 +152,27 @@ class EnnemyController(object):
             if time.time() - self.timeAtLastEnnemySpawnAttempt > 1:
                 self.timeAtLastEnnemySpawnAttempt = time.time()
                 if random.randint(0, 100) < self.ennemySpawnChance:
-                    self.ennemies.append(Ennemy())
+                    if random.randint(0, 2) == 0:
+                        self.ennemies.append(Ally())
+                    else:
+                        self.ennemies.append(Ennemy())
                     self.timeAtLastEnnemySpawn = time.time()
 
-        results = [0, 0]  # 0 deaths, 0 votes to add
-        for ennemy in self.ennemies:
-            result = ennemy.update(screen)
+        results = [0, 0, 0, 0]  # 0 democrat deaths, 0 republican deaths, 0 votes to add Democrat, 0 votes to add Republican
+        for person in self.ennemies:
+            result = person.update(screen)
             if result == "DEAD":
-                del self.ennemies[self.ennemies.index(ennemy)]
+                del self.ennemies[self.ennemies.index(person)]
                 results[0] += 1
-            elif result == "ADDVOTE":
-                del self.ennemies[self.ennemies.index(ennemy)]
+            elif result == "DEADLOL":
+                del self.ennemies[self.ennemies.index(person)]
                 results[1] += 1
+            elif result == "DEMOCRAT_ADDVOTE":
+                del self.ennemies[self.ennemies.index(person)]
+                results[2] += 1
+            elif result == "REPUBLICAN_ADDVOTE":
+                del self.ennemies[self.ennemies.index(person)]
+                results[3] += 1
 
         return results
 

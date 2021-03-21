@@ -55,7 +55,7 @@ class Ennemy(object):
         if self.health < 0:
             return "DEAD"
         if self.position[0] < 0:
-            return "ADDVOTE"
+            return "DEMOCRAT_ADDVOTE"
 
     def hit(self, damage):
         self.health -= damage
@@ -86,4 +86,5 @@ class Ennemy(object):
 
     @property
     def collisionbox(self):
-        return pygame.Rect((self.position[0] + cst.COLLISION_RELATIVE[0], self.position[1]), cst.COLLISION_RELATIVE[2:])
+        return pygame.Rect(
+            (self.position[0] + cst.COLLISION_RELATIVE[0], self.position[1]), cst.COLLISION_RELATIVE[2:])
