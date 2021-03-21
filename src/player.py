@@ -90,13 +90,13 @@ class Player(object):
         self.drawUI(screen)
 
         if self.attackType == 1:  # High Kick
-            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_HIGH_KICK[0], self.position[1]), cst.HITBOX_HIGH_KICK[2:]), wifth=1)
+            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_HIGH_KICK[0], self.position[1]), cst.HITBOX_HIGH_KICK[2:]), width=1)
         elif self.attackType == 2:  # Low Kick
-            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_LOW_KICK[0], self.position[1]), cst.HITBOX_LOW_KICK[2:]), wifth=1)
+            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_LOW_KICK[0], self.position[1]), cst.HITBOX_LOW_KICK[2:]), width=1)
         elif self.attackType == 3:  # KAMEHA
-            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_KAMEHA[0], self.position[1]), cst.HITBOX_KAMEHA[2:]), wifth=1)
+            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_KAMEHA[0], self.position[1]), cst.HITBOX_KAMEHA[2:]), width=1)
         else:  # Classic Hit
-            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_RELATIVE[0], self.position[1]), cst.HITBOX_RELATIVE[2:]), wifth=1)
+            pygame.draw.rect(screen.fenetre, (255, 0, 0), pygame.Rect((self.position[0] + cst.HITBOX_RELATIVE[0], self.position[1]), cst.HITBOX_RELATIVE[2:]), width=1)
 
     def get_map_position(self):
         return self.map_pos
