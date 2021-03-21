@@ -37,8 +37,6 @@ class Game(object):
         button_quit.build(screen)
         self.pauseMenu = Menu(None, [button_help, button_save, button_quit], True)
 
-        
-        
         self.winMenu = Menu(pygame.image.load("assets/img/youWon.jpg"), [], True)
         button_continue = Button((10, 1000), (300, 60), "4 Years Later >>", self.winMenu.stop)
         button_continue.build(screen)
@@ -110,12 +108,18 @@ class Game(object):
             if result == "DEAD":
                 del self.twats[self.twats.index(twat)]
 
-        deaths, baddeaths, democrat_votes, republican_votes = self.ennemyController.update(screen)
+        deaths, baddeaths, democrat_votes, republican_votes = self.ennemyController.update(screen, self.player.popularity)
         self.player.addSpecialAttack(deaths * 5)
         for baddeath in range(baddeaths):
+            twat = Twat(screen, (random.randint(200, 1400), random.randint(30, 600)))
             self.twats.append(
-                Twat(screen, (random.randint(200, 1400), random.randint(30, 600)))
+                twat
             )
+            self.player.popularity -= twat.rt * 0.1
+            self.player.updatePopularity(screen)
+
+        self.player.popularity += deaths * 0.2
+        self.player.updatePopularity(screen)
 
         for key, ballot in self.ballots.items():
             if key == "democrat":
@@ -168,12 +172,12 @@ class EnnemyController(object):
         self.timeAtLastEnnemySpawnAttempt = 0
         self.ennemySpawnChance = 10 * difficulty  # Ten percent chance of spawning each second
 
-    def update(self, screen):
+    def update(self, screen, player_popularity):
         if time.time() - self.timeAtLastEnnemySpawn > self.minTimeBetweenEnnemySpawn:
             if time.time() - self.timeAtLastEnnemySpawnAttempt > 1:
                 self.timeAtLastEnnemySpawnAttempt = time.time()
                 if random.randint(0, 100) < self.ennemySpawnChance:
-                    if random.randint(0, 2) == 0:
+                    if random.randint(0, 100) < player_popularity:
                         self.ennemies.append(Ally())
                     else:
                         self.ennemies.append(Ennemy())
