@@ -8,7 +8,6 @@ class Map(object):
         map_info = json.load(open(mapFile, "r"))
         self.image = pygame.image.load(map_info["img"]).convert_alpha()
         self.size = self.image.get_size()
-        self.absolute_position = [0, 0]
 
     def draw(self, screen, player):
         position = [player.get_map_position(), 0]
