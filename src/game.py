@@ -72,17 +72,22 @@ class Game(object):
     def update(self, screen):
         self.gameEndTime = int(self.gameEndTime - screen.timeElapsed)
         if self.gameEndTime <= 0:
-            if self.ballots["republican"].votes <= self.ballots["democrat"].votes:
+            if self.ballots["republican"].votes > self.ballots["democrat"].votes:
                 self.winMenu.run(screen)
             else:
                 self.loseMenu.run(screen)
             self.stop()
+
+        if self.player.popularity < 20:
+            self.loseMenu.run(screen)
+            self.stop()
+
         for event in screen.events():
             action = self.player.eventUpdate(event)
             if action == "HIT":
                 self.ennemyController.hit(self.player.hitbox, self.player.damage)
             elif action == "KAMEHAMEHA":
-                self.ennemyController.hit(self.player.hitbox, 51)
+                self.ennemyController.hit(self.player.hitbox, 50)
             elif action == "BUILDWALL":
                 self.invocations.append(
                     Wall(
