@@ -23,11 +23,15 @@ class Ennemy(object):
             self.velAngle += 90 * screen.timeElapsed
         self.position[0] += self.speed * self.velocity[0] * screen.timeElapsed
 
-    def hit(self, damage):
-        self.health -= damage
         if self.health < 0:
             return "DEAD"
-        self.healthBar.update(self.health)
+        if self.position[0] < 0:
+            return "ADDVOTE"
+
+    def hit(self, damage):
+        self.health -= damage
+        if self.health > 0:
+            self.healthBar.update(self.health)
 
     def collide(self, event):
         if event.pos[0] > self.position[0] > self.pos[0] + self.image.get_size()[0]:
