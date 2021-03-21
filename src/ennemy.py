@@ -1,6 +1,7 @@
 import random
 import math
 import glob
+import time
 import os
 
 import pygame
@@ -23,6 +24,8 @@ class Ennemy(object):
             else:
                 self.images[animation].append(pygame.image.load(filename).convert_alpha())
 
+        self.timeAtLastAttack = 0
+
         self.image = pygame.image.load("assets/img/player/animation/idle_1.png").convert_alpha()
         self.speed = random.randrange(200, 420)
         self.position = [1920, random.randrange(500 - self.image.get_size()[1], 1080 - self.image.get_size()[1])]
@@ -32,6 +35,13 @@ class Ennemy(object):
         self.velocity = [-1, 0]
 
         self.animstate = 0
+
+    @property
+    def can_attack(self):
+        return (time.time() - self.timeAtLastAttack) * 1000 >= cst.ENNEMY_ATTACK_COOLDOWN
+
+    def attack(self):
+        self.timeAtLastAttack = time.time()
 
     def update(self, screen):
         if self.velAngle < 270:
