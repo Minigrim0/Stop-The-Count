@@ -37,7 +37,7 @@ class Wall(object):
             return "DEAD"
 
     def collide(self, ennemy):
-        if ennemy.collisionbox.colliderect(self.collisionbox):
+        if ennemy.collisionbox and ennemy.collisionbox.colliderect(self.collisionbox):
             if ennemy.can_attack:
                 ennemy.attack()
                 self.health -= 1

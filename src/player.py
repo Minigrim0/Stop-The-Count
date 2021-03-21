@@ -45,6 +45,9 @@ class Player(object):
                 newSound.set_volume(0.5)
                 self.sounds[sound].append(newSound)
 
+        self.wall_building_sound = pygame.mixer.Sound("assets/sound/build a wall.wav")
+        self.wall_building_sound.set_volume(0.5)
+
         self.size = (205, 415)
         self.velocity = [0, 0]
         self.speed = 500
@@ -179,9 +182,10 @@ class Player(object):
                 self.attackCooldown = cst.ATTACK_COOLDOWN / 1000
                 pygame.mixer.Sound.play(random.choice(self.sounds["attack"]))
                 return "HIT"
-            elif event.key == pygame.locals.K_RETURN and self.status == cst.IDLE and self.specialAttack >= 25:
+            elif event.key == pygame.locals.K_RETURN and self.specialAttack >= 25:
                 self.specialAttack = 0
                 self.updateUI()
+                pygame.mixer.Sound.play(self.wall_building_sound)
                 return "BUILDWALL"
 
     @property
