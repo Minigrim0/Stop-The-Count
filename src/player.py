@@ -61,6 +61,8 @@ class Player(object):
         self.specialAttackBarBack.fill((50, 50, 50))
         self.specialAttackBar = pygame.Surface((10, 200))
 
+        self.popularity = 50  # Keep it above 50
+
         self.status = cst.IDLE
         self.damage = 30
         self.attackType = 0
