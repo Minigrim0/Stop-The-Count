@@ -98,7 +98,7 @@ class Player(object):
         self.popularityBar = pygame.Surface((round(1500 * self.popularity / 100), 25))
         self.popularityBar.fill((255, 0, 0))
 
-        self.popularityText = screen.fonts["25"].render(f"{round(self.popularity, 2)}%", 0, (255, 255, 255))
+        self.popularityText = screen.fonts["25"].render(f"Popularity : {round(self.popularity, 2)}%", 0, (255, 255, 255))
 
     def drawUI(self, screen):
         screen.blit(self.popularityBarBack, (210, 1000))
