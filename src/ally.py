@@ -87,5 +87,3 @@ class Ally(object):
     @property
     def collisionbox(self):
         return None
-        return pygame.Rect(
-            (self.position[0] + cst.COLLISION_RELATIVE[0], self.position[1]), cst.COLLISION_RELATIVE[2:])
