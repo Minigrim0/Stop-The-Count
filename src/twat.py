@@ -5,7 +5,7 @@ import random
 class Twat(object):
     def __init__(self, screen, position):
         self.image = pygame.image.load("assets/img/twat.png").convert_alpha()
-        self.lifetime = 15
+        self.lifetime = 10
         self.rt = random.randrange(100)
         self.rt_img = screen.fonts["25"].render(str(self.rt), 1, (255, 0, 0))
         self.position = position
