@@ -36,6 +36,21 @@ class Game(object):
         button_quit = Button((1500, 300), (300, 60), "Quit", self.stop)
         button_quit.build(screen)
         self.pauseMenu = Menu(None, [button_help, button_save, button_quit], True)
+
+        
+        
+        self.winMenu = Menu(pygame.image.load("assets/img/youWon.jpg"), [], True)
+        button_continue = Button((10, 1000), (300, 60), "4 Years Later >>", self.winMenu.stop)
+        button_continue.build(screen)
+        self.winMenu.buttons.append(button_continue)
+
+        button_quit = Button((10, 1000), (300, 60), "Quit Because I'm Bad", exit)
+        button_quit.build(screen)
+        self.loseMenu = Menu(pygame.image.load("assets/img/youLose.jpg"), [button_quit], True)
+        button_continue = Button((400, 1000), (300, 60), "Continue & Sue Bedin", self.loseMenu.stop)
+        button_continue.build(screen)
+        self.loseMenu.buttons.append(button_continue)
+
         self.invocations = []
         self.twats = []
 
@@ -59,6 +74,12 @@ class Game(object):
 
     def update(self, screen):
         self.gameEndTime = int(self.gameEndTime - screen.timeElapsed)
+        if self.gameEndTime <= 0:
+            if self.ballots["republican"].votes <= self.ballots["democrat"].votes:
+                self.winMenu.run(screen)
+            else:
+                self.loseMenu.run(screen)
+            self.stop()
         for event in screen.events():
             action = self.player.eventUpdate(event)
             if action == "HIT":
