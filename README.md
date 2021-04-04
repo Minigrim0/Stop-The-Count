@@ -24,3 +24,16 @@ python3 main.py
 
 ## Screenshot
 ![screenshot1](assets/misc/screenshot.png)
+
+
+## Images sources
+
+### Unsplash :
+* [background](https://unsplash.com/photos/B_vXFdzvw3g)
+* [cursor](https://unsplash.com/photos/tCsJ3Fs4lrY)
+
+### Itch.io
+* [Tump's body](https://joaov17.itch.io/gangstar-mobhenchmen-vector-sprite)
+
+### Clean PNG
+* [Trump's expressions](https://www.cleanpng.com/free/trump.html)
